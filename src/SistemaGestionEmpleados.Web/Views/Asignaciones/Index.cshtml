@@ -1,0 +1,114 @@
+@model AsignacionIndexViewModel
+@{
+    ViewData["Title"] = "Asignaciones";
+}
+
+@section HeaderAction {
+    <a asp-action="Create" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-700 hover:bg-blue-800 rounded-lg transition-colors whitespace-nowrap">
+        Nueva asignación
+    </a>
+}
+
+<div class="space-y-6">
+    <div>
+        <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900">Asignaciones de personal</h1>
+        <p class="mt-1 text-sm text-slate-600">Vincule empleados con departamentos, gestione cargos, asignaciones principales e historial.</p>
+    </div>
+
+    <form method="get" asp-action="Index" class="bg-white border border-slate-200 rounded-xl p-4 grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
+        <div>
+            <label for="search-asig" class="block text-xs font-medium text-slate-600 mb-1">Buscar</label>
+            <input id="search-asig" type="search" name="search" value="@Model.Search"
+                   placeholder="Empleado, cargo o departamento..."
+                   class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" />
+        </div>
+        <div>
+            <label for="filtro-depto" class="block text-xs font-medium text-slate-600 mb-1">Departamento</label>
+            <select id="filtro-depto" name="departamentoId" asp-items="Model.Departamentos"
+                    class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
+                <option value="">Todos los departamentos</option>
+            </select>
+        </div>
+        <div>
+            <label for="filtro-estado" class="block text-xs font-medium text-slate-600 mb-1">Estado</label>
+            <select id="filtro-estado" name="estado"
+                    class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
+                <option value="todas" selected="@(Model.Estado == "todas")">Todas</option>
+                <option value="activas" selected="@(Model.Estado == "activas")">Solo activas</option>
+                <option value="finalizadas" selected="@(Model.Estado == "finalizadas")">Solo finalizadas</option>
+            </select>
+        </div>
+        <div class="flex items-center gap-2">
+            <button type="submit" class="flex-1 px-4 py-2 text-sm font-medium text-white bg-slate-900 rounded-lg hover:bg-slate-800">
+                Filtrar
+            </button>
+            <a asp-action="Index" class="px-3.5 py-2 text-sm font-medium text-slate-600 border border-slate-300 rounded-lg hover:bg-slate-50">
+                Limpiar
+            </a>
+        </div>
+    </form>
+
+    <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+        @if (!Model.Items.Any())
+        {
+            <div class="p-10 text-center">
+                <p class="text-sm font-medium text-slate-900">No hay asignaciones que coincidan con el filtro.</p>
+                <a asp-action="Create" class="mt-4 inline-flex px-4 py-2 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800">
+                    Registrar asignación
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-200 text-xs text-slate-500 bg-slate-50/70">
+                            <th class="py-3 px-6 font-medium">Empleado</th>
+                            <th class="py-3 px-4 font-medium">Departamento</th>
+                            <th class="py-3 px-4 font-medium">Cargo</th>
+                            <th class="py-3 px-4 font-medium">Desde / Hasta</th>
+                            <th class="py-3 px-4 font-medium">Estado</th>
+                            <th class="py-3 px-6 font-medium text-right">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="py-3.5 px-6">
+                                    <p class="font-medium text-slate-900">@item.EmpleadoNombreCompleto</p>
+                                    <p class="text-xs text-slate-500">@item.EmpleadoEmail</p>
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <p class="text-slate-900">@item.DepartamentoNombre</p>
+                                    <p class="text-xs text-slate-500">@(item.EsPrincipal ? "Principal" : "Secundaria") · Ext. <span class="font-mono">@item.DepartamentoExtension</span></p>
+                                </td>
+                                <td class="py-3.5 px-4 text-slate-700">@item.Cargo</td>
+                                <td class="py-3.5 px-4 font-mono text-xs text-slate-600 tabular-nums">
+                                    @item.FechaAsignacion.ToString("yyyy-MM-dd")
+                                    <span class="text-slate-400">→</span>
+                                    @(item.FechaFin?.ToString("yyyy-MM-dd") ?? "Vigente")
+                                </td>
+                                <td class="py-3.5 px-4 text-xs font-medium @(item.Activa ? "text-emerald-700" : "text-slate-500")">
+                                    @(item.Activa ? "Activa" : "Finalizada")
+                                </td>
+                                <td class="py-3.5 px-6 text-right whitespace-nowrap text-xs font-medium space-x-3">
+                                    <a asp-action="Details" asp-route-id="@item.AsignacionId" class="text-slate-600 hover:text-slate-900">Ver</a>
+                                    <a asp-action="Edit" asp-route-id="@item.AsignacionId" class="text-blue-700 hover:text-blue-900">Editar</a>
+                                    @if (item.Activa)
+                                    {
+                                        <form asp-action="Finalizar" asp-route-id="@item.AsignacionId" method="post" class="inline">
+                                            <button type="submit" class="text-amber-700 hover:text-amber-900">Finalizar</button>
+                                        </form>
+                                    }
+                                    <a asp-action="Delete" asp-route-id="@item.AsignacionId" class="text-red-600 hover:text-red-800">Eliminar</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

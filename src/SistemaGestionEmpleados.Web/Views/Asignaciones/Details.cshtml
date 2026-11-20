@@ -1,0 +1,56 @@
+@model AsignacionDto
+@{
+    ViewData["Title"] = $"Asignación #{Model.AsignacionId}";
+}
+
+<div class="max-w-2xl bg-white border border-slate-200 rounded-xl p-6 space-y-6">
+    <div class="flex items-start justify-between gap-4">
+        <div>
+            <p class="text-xs font-mono text-slate-500">ASIGNACIÓN #@Model.AsignacionId</p>
+            <h1 class="mt-1 font-display text-2xl font-bold text-slate-900">@Model.EmpleadoNombreCompleto</h1>
+            <p class="text-sm text-slate-600">@Model.Cargo · @Model.DepartamentoNombre</p>
+        </div>
+        <a asp-action="Edit" asp-route-id="@Model.AsignacionId" class="px-3.5 py-2 text-xs font-medium text-slate-700 border border-slate-300 rounded-lg hover:bg-slate-50">
+            Editar
+        </a>
+    </div>
+
+    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-5 border-t border-slate-200 text-sm">
+        <div>
+            <dt class="text-xs text-slate-500">Correo del empleado</dt>
+            <dd class="mt-1 font-medium text-slate-900">@Model.EmpleadoEmail</dd>
+        </div>
+        <div>
+            <dt class="text-xs text-slate-500">Ubicación / Extensión</dt>
+            <dd class="mt-1 font-medium text-slate-900">@Model.DepartamentoUbicacion · Ext. <span class="font-mono">@Model.DepartamentoExtension</span></dd>
+        </div>
+        <div>
+            <dt class="text-xs text-slate-500">Fecha de asignación</dt>
+            <dd class="mt-1 font-mono text-slate-900">@Model.FechaAsignacion.ToString("yyyy-MM-dd")</dd>
+        </div>
+        <div>
+            <dt class="text-xs text-slate-500">Fecha de finalización</dt>
+            <dd class="mt-1 font-mono text-slate-900">@(Model.FechaFin?.ToString("yyyy-MM-dd") ?? "Vigente")</dd>
+        </div>
+        <div>
+            <dt class="text-xs text-slate-500">Tipo de asignación</dt>
+            <dd class="mt-1 font-medium text-slate-900">@(Model.EsPrincipal ? "Departamento principal" : "Asignación secundaria")</dd>
+        </div>
+        <div>
+            <dt class="text-xs text-slate-500">Estado</dt>
+            <dd class="mt-1 font-medium @(Model.Activa ? "text-emerald-700" : "text-slate-600")">@(Model.Activa ? "Activa" : "Finalizada")</dd>
+        </div>
+    </dl>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Observaciones))
+    {
+        <div class="pt-5 border-t border-slate-200">
+            <p class="text-xs text-slate-500 mb-1">Observaciones</p>
+            <p class="text-sm text-slate-700">@Model.Observaciones</p>
+        </div>
+    }
+
+    <div class="pt-4 border-t border-slate-200">
+        <a asp-action="Index" class="text-sm font-medium text-blue-700 hover:underline">Volver al listado de asignaciones</a>
+    </div>
+</div>

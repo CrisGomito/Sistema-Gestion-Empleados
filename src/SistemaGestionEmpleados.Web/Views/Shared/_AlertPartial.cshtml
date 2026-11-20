@@ -1,0 +1,14 @@
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div role="status" class="mb-6 flex items-center justify-between gap-4 px-4 py-3 bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-lg text-sm">
+        <span>@successMessage</span>
+        <button type="button" data-dismiss-alert class="text-emerald-700 hover:text-emerald-950 font-medium text-xs">Cerrar</button>
+    </div>
+}
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div role="alert" class="mb-6 flex items-center justify-between gap-4 px-4 py-3 bg-red-50 border border-red-200 text-red-900 rounded-lg text-sm">
+        <span>@errorMessage</span>
+        <button type="button" data-dismiss-alert class="text-red-700 hover:text-red-950 font-medium text-xs">Cerrar</button>
+    </div>
+}

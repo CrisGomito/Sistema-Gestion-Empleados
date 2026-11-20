@@ -1,0 +1,26 @@
+/* Estilos complementarios en wwwroot/css/site.css junto a Tailwind CSS CDN */
+:root {
+    --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+}
+
+.tabular-nums {
+    font-variant-numeric: tabular-nums;
+}
+
+.field-validation-error {
+    color: #dc2626;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+.input-validation-error {
+    border-color: #dc2626 !important;
+}
+
+.validation-summary-errors ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+}

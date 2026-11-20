@@ -1,0 +1,22 @@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<section class="bg-white border border-slate-200 rounded-xl p-8 max-w-xl">
+    <h1 class="font-display text-2xl font-bold text-slate-900">Se produjo un error inesperado</h1>
+    <p class="mt-2 text-sm text-slate-600">
+        No fue posible completar la operación solicitada. Verifique la conexión con SQL Server o intente nuevamente.
+    </p>
+    @if (Model.ShowRequestId)
+    {
+        <p class="mt-4 text-xs text-slate-500">
+            Identificador de solicitud: <span class="font-mono text-slate-800">@Model.RequestId</span>
+        </p>
+    }
+    <div class="mt-6">
+        <a asp-controller="Home" asp-action="Index" class="inline-flex px-4 py-2 text-sm font-medium text-white bg-slate-900 rounded-lg hover:bg-slate-800">
+            Volver al panel general
+        </a>
+    </div>
+</section>

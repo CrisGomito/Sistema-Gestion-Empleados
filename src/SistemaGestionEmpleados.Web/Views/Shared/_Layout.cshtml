@@ -1,0 +1,106 @@
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "Home";
+    var pageTitle = ViewData["Title"]?.ToString() ?? "Panel General";
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@pageTitle — Gestión de Empleados</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+                        sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased">
+    <div class="min-h-screen flex flex-col lg:flex-row">
+        <!-- Sidebar principal -->
+        <aside class="w-full lg:w-64 shrink-0 bg-white border-b lg:border-b-0 lg:border-r border-slate-200 flex flex-col">
+            <div class="h-16 px-6 flex items-center justify-between border-b border-slate-200">
+                <a asp-controller="Home" asp-action="Index" class="font-display font-bold text-base tracking-tight text-slate-900 whitespace-nowrap">
+                    NóminaCore
+                </a>
+                <button id="mobile-menu-toggle" type="button" class="lg:hidden px-2.5 py-1.5 text-sm text-slate-600 border border-slate-200 rounded-md" aria-label="Alternar navegación">
+                    Menú
+                </button>
+            </div>
+
+            <nav id="sidebar-nav" class="hidden lg:flex flex-col flex-1 px-4 py-5 space-y-1" aria-label="Navegación principal">
+                <a asp-controller="Home" asp-action="Index"
+                   class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors @(currentController == "Home" ? "bg-blue-50 text-blue-700" : "text-slate-600 hover:text-slate-900 hover:bg-slate-100")">
+                    Panel general
+                </a>
+                <a asp-controller="Departamentos" asp-action="Index"
+                   class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors @(currentController == "Departamentos" ? "bg-blue-50 text-blue-700" : "text-slate-600 hover:text-slate-900 hover:bg-slate-100")">
+                    Departamentos
+                </a>
+                <a asp-controller="Empleados" asp-action="Index"
+                   class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors @(currentController == "Empleados" ? "bg-blue-50 text-blue-700" : "text-slate-600 hover:text-slate-900 hover:bg-slate-100")">
+                    Empleados
+                </a>
+                <a asp-controller="Asignaciones" asp-action="Index"
+                   class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors @(currentController == "Asignaciones" ? "bg-blue-50 text-blue-700" : "text-slate-600 hover:text-slate-900 hover:bg-slate-100")">
+                    Asignaciones
+                </a>
+            </nav>
+
+            <div class="hidden lg:block px-6 py-4 border-t border-slate-200 text-xs text-slate-500">
+                <p class="font-medium text-slate-700">Directorio Corporativo</p>
+                <p class="mt-0.5">.NET 10 · SQL Server</p>
+            </div>
+        </aside>
+
+        <!-- Contenido principal -->
+        <div class="flex-1 flex flex-col min-w-0">
+            <header class="h-16 bg-white border-b border-slate-200 px-6 lg:px-8 flex items-center justify-between gap-4">
+                <div class="flex items-center gap-2 text-sm text-slate-500 truncate">
+                    <a asp-controller="Home" asp-action="Index" class="hover:text-slate-900 transition-colors">Inicio</a>
+                    <span aria-hidden="true">/</span>
+                    <span class="font-medium text-slate-900 truncate">@pageTitle</span>
+                </div>
+                <div class="shrink-0">
+                    @if (IsSectionDefined("HeaderAction"))
+                    {
+                        @await RenderSectionAsync("HeaderAction", required: false)
+                    }
+                    else
+                    {
+                        <a asp-controller="Asignaciones" asp-action="Create"
+                           class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-700 hover:bg-blue-800 rounded-lg transition-colors whitespace-nowrap">
+                            Nueva asignación
+                        </a>
+                    }
+                </div>
+            </header>
+
+            <main class="flex-1 px-6 lg:px-8 py-8 max-w-7xl w-full mx-auto">
+                <partial name="_AlertPartial" />
+                @RenderBody()
+            </main>
+
+            <footer class="px-6 lg:px-8 py-4 border-t border-slate-200 text-xs text-slate-500 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <span>Sistema de Gestión de Empleados · Clean Architecture MVC (.NET 10)</span>
+                <span class="font-mono">EF Core 10 · SQL Server</span>
+            </footer>
+        </div>
+    </div>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/Documentación/">
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/SistemaGestionEmpleados.Domain/SistemaGestionEmpleados.Domain.csproj" />
+    <Project Path="src/SistemaGestionEmpleados.Application/SistemaGestionEmpleados.Application.csproj" />
+    <Project Path="src/SistemaGestionEmpleados.Infrastructure/SistemaGestionEmpleados.Infrastructure.csproj" />
+    <Project Path="src/SistemaGestionEmpleados.Web/SistemaGestionEmpleados.Web.csproj" />
+  </Folder>
+</Solution>

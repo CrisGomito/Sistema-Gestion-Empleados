@@ -1,0 +1,82 @@
+@model DepartamentoDto
+@{
+    ViewData["Title"] = $"Departamento: {Model.Nombre}";
+    var asignaciones = ViewBag.Asignaciones as IReadOnlyList<AsignacionDto> ?? Array.Empty<AsignacionDto>();
+}
+
+@section HeaderAction {
+    <a asp-controller="Asignaciones" asp-action="Create" asp-route-departamentoId="@Model.DepartamentoId"
+       class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-700 hover:bg-blue-800 rounded-lg whitespace-nowrap">
+        Asignar empleado
+    </a>
+}
+
+<div class="space-y-6">
+    <div class="bg-white border border-slate-200 rounded-xl p-6">
+        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+            <div>
+                <p class="text-xs font-mono text-slate-500">DEPARTAMENTO #@Model.DepartamentoId</p>
+                <h1 class="mt-1 font-display text-2xl font-bold text-slate-900">@Model.Nombre</h1>
+            </div>
+            <div class="flex items-center gap-2">
+                <a asp-action="Edit" asp-route-id="@Model.DepartamentoId" class="px-3.5 py-2 text-xs font-medium text-slate-700 border border-slate-300 rounded-lg hover:bg-slate-50">Editar</a>
+                <a asp-action="Index" class="px-3.5 py-2 text-xs font-medium text-slate-600 hover:text-slate-900">Volver</a>
+            </div>
+        </div>
+
+        <dl class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6 border-t border-slate-200 text-sm">
+            <div>
+                <dt class="text-xs text-slate-500">Ubicación</dt>
+                <dd class="mt-1 font-medium text-slate-900">@Model.Ubicacion</dd>
+            </div>
+            <div>
+                <dt class="text-xs text-slate-500">Jefe de departamento</dt>
+                <dd class="mt-1 font-medium text-slate-900">@Model.JefeDepartamento</dd>
+            </div>
+            <div>
+                <dt class="text-xs text-slate-500">Extensión</dt>
+                <dd class="mt-1 font-mono font-medium text-slate-900">@Model.Extension</dd>
+            </div>
+        </dl>
+    </div>
+
+    <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-200">
+            <h2 class="font-display text-base font-semibold text-slate-900">Empleados asignados (@asignaciones.Count)</h2>
+        </div>
+        @if (!asignaciones.Any())
+        {
+            <div class="p-8 text-center text-sm text-slate-500">No hay empleados asignados a este departamento.</div>
+        }
+        else
+        {
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-200 text-xs text-slate-500 bg-slate-50/70">
+                            <th class="py-3 px-6 font-medium">Empleado</th>
+                            <th class="py-3 px-4 font-medium">Cargo</th>
+                            <th class="py-3 px-4 font-medium">Inicio</th>
+                            <th class="py-3 px-4 font-medium">Tipo</th>
+                            <th class="py-3 px-6 font-medium text-right">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @foreach (var item in asignaciones)
+                        {
+                            <tr>
+                                <td class="py-3 px-6 font-medium text-slate-900">@item.EmpleadoNombreCompleto</td>
+                                <td class="py-3 px-4 text-slate-700">@item.Cargo</td>
+                                <td class="py-3 px-4 font-mono text-xs text-slate-500 tabular-nums">@item.FechaAsignacion.ToString("yyyy-MM-dd")</td>
+                                <td class="py-3 px-4 text-xs text-slate-600">@(item.EsPrincipal ? "Principal" : "Secundaria")</td>
+                                <td class="py-3 px-6 text-right text-xs font-medium @(item.Activa ? "text-emerald-700" : "text-slate-500")">
+                                    @(item.Activa ? "Activa" : "Finalizada")
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

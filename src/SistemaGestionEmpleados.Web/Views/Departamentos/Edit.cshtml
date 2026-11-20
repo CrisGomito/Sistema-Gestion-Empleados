@@ -1,0 +1,55 @@
+@model DepartamentoDto
+@{
+    ViewData["Title"] = "Editar departamento";
+}
+
+<div class="max-w-2xl">
+    <div class="mb-6">
+        <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900">Editar departamento</h1>
+        <p class="mt-1 text-sm text-slate-600">Actualice la información del departamento <span class="font-mono">#@Model.DepartamentoId</span>.</p>
+    </div>
+
+    <form asp-action="Edit" method="post" class="bg-white border border-slate-200 rounded-xl p-6 space-y-5">
+        <input type="hidden" asp-for="DepartamentoId" />
+        <div asp-validation-summary="ModelOnly" class="p-3.5 text-sm text-red-800 bg-red-50 border border-red-200 rounded-lg"></div>
+
+        <div>
+            <label asp-for="Nombre" class="block text-sm font-medium text-slate-700 mb-1.5"></label>
+            <input asp-for="Nombre" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" />
+            <span asp-validation-for="Nombre"></span>
+        </div>
+
+        <div>
+            <label asp-for="Ubicacion" class="block text-sm font-medium text-slate-700 mb-1.5"></label>
+            <input asp-for="Ubicacion" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" />
+            <span asp-validation-for="Ubicacion"></span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <label asp-for="JefeDepartamento" class="block text-sm font-medium text-slate-700 mb-1.5"></label>
+                <input asp-for="JefeDepartamento" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                <span asp-validation-for="JefeDepartamento"></span>
+            </div>
+
+            <div>
+                <label asp-for="Extension" class="block text-sm font-medium text-slate-700 mb-1.5"></label>
+                <input asp-for="Extension" class="w-full px-3.5 py-2 text-sm font-mono border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                <span asp-validation-for="Extension"></span>
+            </div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-200 flex items-center justify-end gap-3">
+            <a asp-action="Index" class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50">
+                Cancelar
+            </a>
+            <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800">
+                Guardar cambios
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

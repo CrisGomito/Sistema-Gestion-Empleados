@@ -1,0 +1,44 @@
+using Microsoft.EntityFrameworkCore;
+using SistemaGestionEmpleados.Application;
+using SistemaGestionEmpleados.Infrastructure;
+using SistemaGestionEmpleados.Infrastructure.Persistence;
+
+var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = builder.Configuration.GetConnectionString("cn") ??
+    throw new InvalidOperationException("Connection string 'cn' not found.");
+
+builder.Services.AddDbContext<GestionEmpleadosDbContext>(options =>
+    options.UseSqlServer(connectionString, sqlOptions =>
+        sqlOptions.MigrationsAssembly(typeof(GestionEmpleadosDbContext).Assembly.FullName)));
+
+// Registro modular de capas Clean Architecture (SOLID / DIP)
+builder.Services.AddInfrastructureRepositories();
+builder.Services.AddApplicationServices();
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseRouting();
+
+app.UseAuthorization();
+
+app.MapStaticAssets();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}")
+    .WithStaticAssets();
+
+app.Run();

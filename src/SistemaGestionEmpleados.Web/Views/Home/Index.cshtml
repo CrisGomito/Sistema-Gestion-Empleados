@@ -1,0 +1,115 @@
+@model DashboardResumenDto
+@{
+    ViewData["Title"] = "Panel general";
+}
+
+<div class="space-y-8">
+    <div>
+        <h1 class="font-display text-2xl font-bold tracking-tight text-slate-900">Resumen organizacional</h1>
+        <p class="mt-1 text-sm text-slate-600">Estado actualizado de departamentos, plantilla de empleados y asignaciones vigentes.</p>
+    </div>
+
+    <!-- Métricas principales -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" aria-label="Indicadores clave">
+        <div class="bg-white border border-slate-200 rounded-xl p-5">
+            <p class="text-xs font-medium text-slate-500">Departamentos</p>
+            <p class="mt-2 font-mono text-3xl font-semibold text-slate-900 tabular-nums">@Model.TotalDepartamentos</p>
+            <a asp-controller="Departamentos" asp-action="Index" class="mt-3 inline-block text-xs font-medium text-blue-700 hover:underline">Administrar áreas</a>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-xl p-5">
+            <p class="text-xs font-medium text-slate-500">Empleados registrados</p>
+            <p class="mt-2 font-mono text-3xl font-semibold text-slate-900 tabular-nums">@Model.TotalEmpleados</p>
+            <a asp-controller="Empleados" asp-action="Index" class="mt-3 inline-block text-xs font-medium text-blue-700 hover:underline">Ver directorio</a>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-xl p-5">
+            <p class="text-xs font-medium text-slate-500">Asignaciones activas</p>
+            <p class="mt-2 font-mono text-3xl font-semibold text-emerald-700 tabular-nums">@Model.TotalAsignacionesActivas</p>
+            <a asp-controller="Asignaciones" asp-action="Index" class="mt-3 inline-block text-xs font-medium text-blue-700 hover:underline">Revisar asignaciones</a>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-xl p-5">
+            <p class="text-xs font-medium text-slate-500">Empleados sin asignación</p>
+            <p class="mt-2 font-mono text-3xl font-semibold @(Model.EmpleadosSinAsignacion > 0 ? "text-amber-600" : "text-slate-900") tabular-nums">@Model.EmpleadosSinAsignacion</p>
+            <a asp-controller="Asignaciones" asp-action="Create" class="mt-3 inline-block text-xs font-medium text-blue-700 hover:underline">Asignar departamento</a>
+        </div>
+    </section>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Asignaciones recientes -->
+        <section class="lg:col-span-2 bg-white border border-slate-200 rounded-xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                <h2 class="font-display text-base font-semibold text-slate-900">Asignaciones recientes</h2>
+                <a asp-controller="Asignaciones" asp-action="Index" class="text-xs font-medium text-blue-700 hover:underline">Ver todas</a>
+            </div>
+            @if (!Model.AsignacionesRecientes.Any())
+            {
+                <div class="p-8 text-center">
+                    <p class="text-sm text-slate-600">Todavía no existen asignaciones registradas.</p>
+                    <a asp-controller="Asignaciones" asp-action="Create" class="mt-4 inline-flex px-4 py-2 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800">
+                        Crear primera asignación
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-200 text-xs text-slate-500 bg-slate-50/70">
+                                <th class="py-3 px-6 font-medium">Empleado</th>
+                                <th class="py-3 px-4 font-medium">Departamento</th>
+                                <th class="py-3 px-4 font-medium">Cargo</th>
+                                <th class="py-3 px-4 font-medium">Fecha</th>
+                                <th class="py-3 px-6 font-medium text-right">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @foreach (var item in Model.AsignacionesRecientes)
+                            {
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="py-3 px-6 font-medium text-slate-900">@item.EmpleadoNombreCompleto</td>
+                                    <td class="py-3 px-4 text-slate-700">@item.DepartamentoNombre</td>
+                                    <td class="py-3 px-4 text-slate-600">@item.Cargo</td>
+                                    <td class="py-3 px-4 font-mono text-xs text-slate-500 tabular-nums whitespace-nowrap">@item.FechaAsignacion.ToString("yyyy-MM-dd")</td>
+                                    <td class="py-3 px-6 text-right text-xs font-medium @(item.Activa ? "text-emerald-700" : "text-slate-500")">
+                                        @(item.Activa ? "Activa" : "Finalizada")
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </section>
+
+        <!-- Distribución por departamento -->
+        <section class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                <h2 class="font-display text-base font-semibold text-slate-900">Dotación por departamento</h2>
+                <a asp-controller="Departamentos" asp-action="Create" class="text-xs font-medium text-blue-700 hover:underline">Nuevo</a>
+            </div>
+            @if (!Model.DistribucionDepartamentos.Any())
+            {
+                <div class="p-8 text-center text-sm text-slate-600">
+                    Registre departamentos para visualizar su dotación.
+                </div>
+            }
+            else
+            {
+                <ul class="divide-y divide-slate-100">
+                    @foreach (var d in Model.DistribucionDepartamentos)
+                    {
+                        <li class="px-6 py-3.5 flex items-center justify-between gap-4">
+                            <div class="min-w-0">
+                                <a asp-controller="Departamentos" asp-action="Details" asp-route-id="@d.DepartamentoId" class="text-sm font-medium text-slate-900 hover:text-blue-700 truncate block">
+                                    @d.Nombre
+                                </a>
+                                <p class="text-xs text-slate-500 truncate">@d.JefeDepartamento · Ext. <span class="font-mono">@d.Extension</span></p>
+                            </div>
+                            <span class="font-mono text-sm font-semibold text-slate-900 tabular-nums shrink-0">@d.EmpleadosActivos</span>
+                        </li>
+                    }
+                </ul>
+            }
+        </section>
+    </div>
+</div>
